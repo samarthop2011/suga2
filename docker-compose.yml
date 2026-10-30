@@ -1,0 +1,32 @@
+services:
+  debian13-kvm:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: debian13-kvm
+    restart: unless-stopped
+
+    # Suga must support host device passthrough for hardware KVM.
+    devices:
+      - /dev/kvm:/dev/kvm
+
+    ports:
+      - "8080:8080"
+      - "2222:2222"
+
+    volumes:
+      - debian13-data:/data
+
+    environment:
+      PORT: "8080"
+      VM_NAME: "debian13"
+      VM_RAM: "2048"
+      VM_CPUS: "2"
+      VM_DISK_SIZE: "20G"
+      VM_USERNAME: "sam"
+      VM_PASSWORD: "${VM_PASSWORD:?Set VM_PASSWORD in Suga}"
+      TTYD_USERNAME: "sam"
+      TTYD_PASSWORD: "${TTYD_PASSWORD:?Set TTYD_PASSWORD in Suga}"
+
+volumes:
+  debian13-data:
